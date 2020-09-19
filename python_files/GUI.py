@@ -1,7 +1,7 @@
 import tkinter as tk
 #import matplotlib.pyplot as plt
 
-xarr = []
+cararr = []
 yarr = []
 
 class Car:
@@ -11,8 +11,12 @@ class Car:
         self.draw(canvas)
     def draw(self,canvas):
         size = 25
+        if len(cararr) != 0:
+            canvas.delete(cararr[0])
+            cararr.pop()
+
         pos = canvas.create_oval(self.x-size, self.y-size, self.x+size, self.y+size, fill='yellow')
-        xarr.append(pos)
+        cararr.append(pos)
 
 def updatePos(car, canvas, window):
     while car.x < 1000:
@@ -41,7 +45,7 @@ def updatePos(car, canvas, window):
     elif car.y == 0:
         #Reaches top wall
         pass
-    window.after(100,car)
+    window.after(100,updatePos,car,canvas,window)
 
 def main():
     window = tk.Tk()
