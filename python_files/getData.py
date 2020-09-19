@@ -45,6 +45,15 @@ import time
 import sys
 import signal
 
+numbers = []
+
+# we should create a function that communicates with the arduino, to stop when we click a certain button
+# similar to the code that is above this one
+
+
+def turnOff():
+    pass
+
 
 def signal_handler(signal, frame):
     print("closing program")
@@ -57,14 +66,26 @@ BAUD = input("Enter the Baudrate\n")
 SerialPort = serial.Serial(COM, BAUD, timeout=1)
 
 while (1):
-    try:
-        OutgoingData = input('> ')
-        SerialPort.write(bytes(OutgoingData, 'utf-8'))
-    except KeyboardInterrupt:
-        print("Closing and exiting the program")
-        SerialPort.close()
-        sys.exit(0)
+    # try:
+    #     OutgoingData = input('> ')
+    #     SerialPort.write(bytes(OutgoingData, 'utf-8'))
+    # except KeyboardInterrupt:
+    #     print("Closing and exiting the program")
+    #     SerialPort.close()
+    #     sys.exit(0)
+
+    # gets the incoming data from serial
     IncomingData = SerialPort.readline()
     if(IncomingData):
-        print((IncomingData).decode('utf-8'))
+        print((IncomingData).decode('utf-8'))   # print data
+
+        # gets value without extra whitespace
+        # numbers.append(IncomingData.decode('utf-8').rstrip())
     time.sleep(0.01)
+    '''
+    if len(numbers) >= 99:
+        break
+
+for num in numbers:
+    print(num)
+'''
