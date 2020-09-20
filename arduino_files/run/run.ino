@@ -7,6 +7,7 @@ void setup()
   setupSensors();
   setupWheels();
   Serial.begin(9600);
+  delay(3000);  // wait 3 seconds before starting
 }
 
 void loop()
