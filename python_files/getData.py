@@ -60,32 +60,35 @@ def signal_handler(signal, frame):
     SerialPort.close()
     sys.exit(0)
 
+# create a function that we can run in GUI that will get data and constantly return it
 
-COM = input("Enter the COM Port\n")
-BAUD = input("Enter the Baudrate\n")
-SerialPort = serial.Serial(COM, BAUD, timeout=1)
 
-while (1):
-    # try:
-    #     OutgoingData = input('> ')
-    #     SerialPort.write(bytes(OutgoingData, 'utf-8'))
-    # except KeyboardInterrupt:
-    #     print("Closing and exiting the program")
-    #     SerialPort.close()
-    #     sys.exit(0)
+def start():
+    COM = input("Enter the COM Port\n")
+    BAUD = input("Enter the Baudrate\n")
+    SerialPort = serial.Serial(COM, BAUD, timeout=1)
 
-    # gets the incoming data from serial
-    IncomingData = SerialPort.readline()
-    if(IncomingData):
-        print((IncomingData).decode('utf-8'))   # print data
+    while (1):
+        # try:
+        #     OutgoingData = input('> ')
+        #     SerialPort.write(bytes(OutgoingData, 'utf-8'))
+        # except KeyboardInterrupt:
+        #     print("Closing and exiting the program")
+        #     SerialPort.close()
+        #     sys.exit(0)
 
-        # gets value without extra whitespace
-        # numbers.append(IncomingData.decode('utf-8').rstrip())
-    time.sleep(0.01)
+        # gets the incoming data from serial
+        IncomingData = SerialPort.readline()
+        if(IncomingData):
+            print((IncomingData).decode('utf-8'))   # print data
+
+            # gets value without extra whitespace
+            # numbers.append(IncomingData.decode('utf-8').rstrip())
+        time.sleep(0.01)
+        '''
+        if len(numbers) >= 99:
+            break
+
+    for num in numbers:
+        print(num)
     '''
-    if len(numbers) >= 99:
-        break
-
-for num in numbers:
-    print(num)
-'''
