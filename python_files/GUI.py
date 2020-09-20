@@ -103,7 +103,7 @@ class Car:
             # self.endX = self.x
 
 
-def moveCar(car, canvas, window, num_turns, innerDist, outerDist, switch):
+def moveCar(car, canvas, window, num_turns, innerDist, outerDist, frontDist, switch):
     # stop finishing 2 rotations
     if num_turns >= 8:
         exit(0)
@@ -120,36 +120,52 @@ def moveCar(car, canvas, window, num_turns, innerDist, outerDist, switch):
         if car.x >= 900:
             car.turn()
             window.after(100, moveCar, car, canvas, window,
-                         num_turns + 1, innerDist, outerDist, switch)
+                         num_turns + 1, innerDist, outerDist, frontDist, switch)
             return
-        car.x += 10
+        # if distance in front is readable and the change in position is not larger than 50 pixels
+        if frontDist > 0 and abs(950 - (frontDist * 0.6) - car.x) < 50:
+            car.x = 950 - (int)(frontDist * 0.6)
+        else:
+            car.x += 10
 
     # going up
     elif num_turns % 4 == 1:
         if car.y <= 100:
             car.turn()
             window.after(100, moveCar, car, canvas, window,
-                         num_turns + 1, innerDist, outerDist, switch)
+                         num_turns + 1, innerDist, outerDist, frontDist, switch)
             return
-        car.y -= 10
+        # if distance in front is readable and the change in position is not larger than 50 pixels
+        if frontDist > 0 and abs((frontDist * 0.6) - 50 - car.y) < 50:
+            car.y = (int)(frontDist * 0.6) - 50
+        else:
+            car.y -= 10
 
     # going left
     elif num_turns % 4 == 2:
         if car.x <= 100:
             car.turn()
             window.after(100, moveCar, car, canvas, window,
-                         num_turns + 1, innerDist, outerDist, switch)
+                         num_turns + 1, innerDist, outerDist, frontDist, switch)
             return
-        car.x -= 10
+        # if distance in front is readable and the change in position is not larger than 50 pixels
+        if frontDist > 0 and abs((frontDist * 0.6) - 50 - car.x) < 50:
+            car.x = (int)(frontDist * 0.6) - 50
+        else:
+            car.x -= 10
 
     # going down
     else:
         if car.y >= 900:
             car.turn()
             window.after(100, moveCar, car, canvas, window,
-                         num_turns + 1, innerDist, outerDist, switch)
+                         num_turns + 1, innerDist, outerDist, frontDist, switch)
             return
-        car.y += 10
+        # if distance in front is readable and the change in position is not larger than 50 pixels
+        if frontDist > 0 and abs(950 - (frontDist * 0.6) - car.y) < 50:
+            car.y = 950 - (int)(frontDist * 0.6)
+        else:
+            car.y += 10
 
     car.draw(canvas)
 
@@ -167,7 +183,7 @@ def moveCar(car, canvas, window, num_turns, innerDist, outerDist, switch):
 
     # changed it to every 10 ms to make it faster
     window.after(10, moveCar, car, canvas, window,
-                 num_turns, dictVals.get('inner', -1), dictVals.get('outer', -1), switch)
+                 num_turns, dictVals.get('inner', -1), dictVals.get('outer', -1), dictVals.get('front', -1), switch)
 
 
 def main():
@@ -187,7 +203,7 @@ def main():
         exit(0)
 
     window.after(100, moveCar, car, canvas, window, 0,
-                 dictVals.get('inner', -1), dictVals.get('outer', -1), switch)
+                 dictVals.get('inner', -1), dictVals.get('outer', -1), dictVals.get('front', -1), switch)
 
     window.mainloop()
 
