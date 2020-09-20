@@ -64,6 +64,8 @@ class Car:
 
     # Adjust self.x and self.y according to car's distance from the wall
     def updatePos(self, distance):
+        if (distance == 0):
+            pass
         distance += self.width
         if self.direction % 4 == 0:
             self.y = 950 - distance
@@ -144,9 +146,13 @@ def moveCar(car, canvas, window, num_turns, innerDist, outerDist):
         car.y += 10
 
     car.draw(canvas)
+
+    # get the data points again
+    dictVals = getData.start()
+
     # changed it to every 10 ms to make it faster
     window.after(10, moveCar, car, canvas, window,
-                 num_turns, innerDist, outerDist)
+                 num_turns, dictVals.get('inner', 0), dictVals.get('outer', 0))
 
 
 def main():
@@ -159,7 +165,9 @@ def main():
     car = Car(canvas)
 
     # to update the graph every 100 ms
-    window.after(10, moveCar, car, canvas, window, 0, 100, 50)
+    dictVals = getData.start()
+    window.after(100, moveCar, car, canvas, window, 0,
+                 dictVals.get('inner', 0), dictVals.get('outer', 0))
 
     window.mainloop()
 

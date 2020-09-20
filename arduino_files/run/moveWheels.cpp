@@ -6,12 +6,18 @@ void setupWheels()
 {
   pinMode(E1, OUTPUT);
   pinMode(E2, OUTPUT);
+  pinMode(E3, OUTPUT);
+  pinMode(E4, OUTPUT);
 
   pinMode(I1, OUTPUT);
   pinMode(I2, OUTPUT);
   pinMode(I3, OUTPUT);
   pinMode(I4, OUTPUT);
-
+  pinMode(I5, OUTPUT);
+  pinMode(I6, OUTPUT);
+  pinMode(I7, OUTPUT);
+  pinMode(I8, OUTPUT);
+  
   // sets up the front sensor
   pinMode(trigPin2, OUTPUT);
   pinMode(echoPin2, INPUT);
@@ -73,6 +79,10 @@ void stop()
   digitalWrite(I2, LOW);
   digitalWrite(I3, LOW);
   digitalWrite(I4, LOW);
+  digitalWrite(I5, LOW);
+  digitalWrite(I6, LOW);
+  digitalWrite(I7, LOW);
+  digitalWrite(I8, LOW);
 }
 
 void moveForward()
@@ -81,6 +91,10 @@ void moveForward()
   digitalWrite(I2, LOW);
   digitalWrite(I3, HIGH);
   digitalWrite(I4, LOW);
+  digitalWrite(I5, HIGH);
+  digitalWrite(I6, LOW);
+  digitalWrite(I7, HIGH);
+  digitalWrite(I8, LOW);
 }
 
 void moveBackward()
@@ -89,6 +103,10 @@ void moveBackward()
   digitalWrite(I2, HIGH);
   digitalWrite(I3, LOW);
   digitalWrite(I4, HIGH);
+  digitalWrite(I5, LOW);
+  digitalWrite(I6, HIGH);
+  digitalWrite(I7, LOW);
+  digitalWrite(I8, HIGH);
 }
 
 void turnRight()
@@ -96,6 +114,8 @@ void turnRight()
   // turn
   analogWrite(E1, 255); // Run in full speed
   analogWrite(E2, 153); // Run in half speed
+  analogWrite(E3, 255); // Run in full speed
+  analogWrite(E4, 153); // Run in half speed
 
   digitalWrite(I1, HIGH);
   digitalWrite(I4, HIGH);
@@ -103,17 +123,31 @@ void turnRight()
   digitalWrite(I2, LOW);
   digitalWrite(I3, LOW);
 
+  digitalWrite(I5, HIGH);
+  digitalWrite(I8, HIGH);
+
+  digitalWrite(I6, LOW);
+  digitalWrite(I7, LOW);
+
   delay(500); // how long we turn for
 
   // go forwards
   analogWrite(E1, 255); // Run in full speed
   analogWrite(E2, 255); // Run in full speed
+  analogWrite(E3, 255); // Run in full speed
+  analogWrite(E4, 255); // Run in full speed
 
   digitalWrite(I1, HIGH);
   digitalWrite(I3, HIGH);
 
   digitalWrite(I2, LOW);
   digitalWrite(I4, LOW);
+
+  digitalWrite(I5, HIGH);
+  digitalWrite(I7, HIGH);
+
+  digitalWrite(I6, LOW);
+  digitalWrite(I8, LOW);
 }
 
 void turnLeft()
@@ -121,6 +155,8 @@ void turnLeft()
   // turn
   analogWrite(E1, 153); // Run in half speed
   analogWrite(E2, 255); // Run in full speed
+  analogWrite(E3, 153); // Run in half speed
+  analogWrite(E4, 255); // Run in full speed
 
   digitalWrite(I2, HIGH);
   digitalWrite(I3, HIGH);
@@ -128,17 +164,32 @@ void turnLeft()
   digitalWrite(I1, LOW);
   digitalWrite(I4, LOW);
 
+  digitalWrite(I6, HIGH);
+  digitalWrite(I7, HIGH);
+
+  digitalWrite(I5, LOW);
+  digitalWrite(I8, LOW);
+
   delay(500); // how long we turn for
 
   // go forwards
   analogWrite(E1, 255); // Run in full speed
   analogWrite(E2, 255); // Run in full speed
+  analogWrite(E3, 255); // Run in full speed
+  analogWrite(E4, 255); // Run in full speed
 
   digitalWrite(I1, HIGH);
   digitalWrite(I3, HIGH);
 
   digitalWrite(I2, LOW);
   digitalWrite(I4, LOW);
+
+  digitalWrite(I5, HIGH);
+  digitalWrite(I7, HIGH);
+
+  digitalWrite(I6, LOW);
+  digitalWrite(I8, LOW);
+}
 }
 
 // IF NOT then look at some of these examples:

@@ -14,6 +14,21 @@ void setup()
 
 void loop()
 {
+  if (Serial.available() > 0) {
+    char command = Serial.read();
+    if (command == 'e') {
+      Serial.println("EXIT: 0");
+      return;
+    }
+    else if (command == 'w') {
+      Serial.println("WAIT: 0");
+      return;
+    }
+    else if (command == 's') {
+      delay(5000);
+      Serial.println("STOP: 0");
+    }
+  }
   runSensors();
   runWheels()
   // put your main code here, to run repeatedly:

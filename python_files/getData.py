@@ -1,101 +1,90 @@
-'''
 # https://maker.pro/arduino/tutorial/how-to-create-simple-serial-communications-between-an-arduino-and-the-python-ide
-import tkinter as tk
-# import Tkinter
-# from Tkinter import *
-import serial
-from time import sleep
-
-# Enter your COM port in the below line
-
-# ard = serial.Serial(‘/dev/tty.usbmodem14201’, 9600)
-ard = serial.Serial('com8', 9600)
-sleep(2)
-print(ard.readline(ard.inWaiting()))
-
-top = tk.Tk()
-
-
-def TrunOn():
-    ard.write('1')
-    sleep(0.1)
-    data = ard.readline(ard.inWaiting())
-    label1.config(text=str(data))
-
-
-def Turnoff():
-    ard.write('0')
-    sleep(0.1)
-    data = ard.readline(ard.inWaiting())
-    label1.config(text=str(data))
-
-
-OnButton = tk.Button(top, text="LED ON", command=TrunOn)
-OffButton = tk.Button(top, text="LED OFF", command=Turnoff)
-label1 = Label(top, fg="green")
-
-label1.pack()
-OnButton.pack()
-OffButton.pack()
-top.mainloop()
-'''
 # on mac, use ls /dev/tty.* to find something like /dev/tty.usbmodem141101 (for COM port)
 import serial
 import time
 import sys
 import signal
-
-numbers = []
-
-# we should create a function that communicates with the arduino, to stop when we click a certain button
-# similar to the code that is above this one
+import tkinter as tk
+from time import sleep
 
 
-def turnOff():
-    pass
+# GUI to turn on/off/exit the project
+class Switch:
+    def __init__(self):
+        self.window = tk.Tk()
+        self.message = tk.Label(
+            self.window, text="Ready whenever you are!", fg="blue")
+        self.onButton = tk.Button(self.window, text="ON", command=self.TurnOn)
+        self.offButton = tk.Button(
+            self.window, text="OFF", command=self.TurnOff)
+        self.exitButton = tk.Button(
+            self.window, text="EXIT", command=self.Exit)
+        self.run()
+        self.running = 'w'  # waiting
+
+    def TurnOn(self):
+        self.message.config(text='VROOM! The car is running!', fg="green")
+        self.running = ''  # running, no Serial.available
+
+    def TurnOff(self):
+        self.message.config(text='HOLUP! The car has stopped!', fg="red")
+        self.running = 's'  # stopped
+
+    def run(self):
+        self.message.pack()
+        self.onButton.pack()
+        self.offButton.pack()
+        self.exitButton.pack()
+        self.window.mainloop()
+
+    def Exit(self):
+        self.running = 'e'  # exited
+        exit(0)
 
 
+# not sure if we need this lol
 def signal_handler(signal, frame):
     print("closing program")
     SerialPort.close()
     sys.exit(0)
 
-# create a function that we can run in GUI that will get data and constantly return it
-
 
 def start():
     COM = input("Enter the COM Port\n")
     BAUD = input("Enter the Baudrate\n")
-    SerialPort = serial.Serial(COM, BAUD, timeout=1)
+    switch = Switch()
 
-    for i in range(100):
-        # try:
-        #     OutgoingData = input('> ')
-        #     SerialPort.write(bytes(OutgoingData, 'utf-8'))
-        # except KeyboardInterrupt:
-        #     print("Closing and exiting the program")
-        #     SerialPort.close()
-        #     sys.exit(0)
+    SerialPort = serial.Serial(COM, BAUD, timeout=1)
+    values = {}
+    while len(values) < 3:
+        try:
+            OutgoingData = switch.running
+            SerialPort.write(bytes(OutgoingData, 'utf-8'))
+        except KeyboardInterrupt:
+            print("Closing and exiting the program")
+            SerialPort.close()
+            sys.exit(0)
 
         # gets the incoming data from serial
         IncomingData = SerialPort.readline()
-        if(IncomingData):
-            print((IncomingData).decode('utf-8'))   # print data
-
+        if (IncomingData):
+            # print((IncomingData).decode('utf-8'))   # print data
             # gets value without extra whitespace
-            # numbers.append(IncomingData.decode('utf-8').rstrip())
+            value = IncomingData.decode('utf-8').rstrip().split(": ")
+            if (value[0] == "EXIT"):
+                return None
+            elif (value[0] == "WAIT"):
+                return {"WAIT": 0}
+            elif (value[0] == "STOP"):
+                return {"STOP": 0}
+            values[value[0]] = value[1]
         time.sleep(0.01)
-        '''
-        if len(numbers) >= 99:
-            break
-
-    for num in numbers:
-        print(num)
-    '''
+    return values
 
 
 def main():
     start()
 
 
-main()
+if __name__ == "__main__":
+    main()
