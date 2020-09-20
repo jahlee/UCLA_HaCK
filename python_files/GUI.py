@@ -1,9 +1,11 @@
 import tkinter as tk
 import getData
+from time import sleep
 # import matplotlib.pyplot as plt
 # car ~ 25 x 20cm, arena ~ 1500 x 1500cm
-# --> 16 x 13px car, 1000 x 1000px arena
-
+# --> 16 x 13px car, 900 x 900px arena
+# 1 px = 0.6cm
+# given a distance X in cm, --> 0.6 * X = num of pixels
 
 car_arr = []
 wall_arr = []
@@ -46,8 +48,12 @@ class Car:
         wall_arr.append(pos)
 
     def drawInside(self, canvas, distance):
+        # recorded a distance greater than the arena length
+        if distance > 1500 or distance < 0:
+            return
+
         # tot_dist = poisition of sensors + distance away from object
-        tot_dist = self.width + distance
+        tot_dist = self.width + (int)(0.6 * distance)
 
         if self.direction % 4 == 0:
             canvas.create_oval(self.x - 1, self.y - tot_dist - 1,
@@ -64,20 +70,20 @@ class Car:
 
     # Adjust self.x and self.y according to car's distance from the wall
     def updatePos(self, distance):
-        if (distance == 0):
+        if (distance < 0):
             pass
-        distance += self.width
+        tot_distance = self.width + (int)(distance*0.6)
         if self.direction % 4 == 0:
-            self.y = 950 - distance
+            self.y = 950 - tot_distance
             self.endY = self.y
         elif self.direction % 4 == 1:
-            self.x = 950 - distance
+            self.x = 950 - tot_distance
             self.endX = self.x
         elif self.direction % 4 == 2:
-            self.y = 50 + distance
+            self.y = 50 + tot_distance
             self.endY = self.y
         else:
-            self.x = 50 + distance
+            self.x = 50 + tot_distance
             self.endX = self.x
 
     # turn the car
@@ -97,7 +103,7 @@ class Car:
             # self.endX = self.x
 
 
-def moveCar(car, canvas, window, num_turns, innerDist, outerDist):
+def moveCar(car, canvas, window, num_turns, innerDist, outerDist, switch):
     # stop finishing 2 rotations
     if num_turns >= 8:
         exit(0)
@@ -114,7 +120,7 @@ def moveCar(car, canvas, window, num_turns, innerDist, outerDist):
         if car.x >= 900:
             car.turn()
             window.after(100, moveCar, car, canvas, window,
-                         num_turns + 1, innerDist, outerDist)
+                         num_turns + 1, innerDist, outerDist, switch)
             return
         car.x += 10
 
@@ -123,7 +129,7 @@ def moveCar(car, canvas, window, num_turns, innerDist, outerDist):
         if car.y <= 100:
             car.turn()
             window.after(100, moveCar, car, canvas, window,
-                         num_turns + 1, innerDist, outerDist)
+                         num_turns + 1, innerDist, outerDist, switch)
             return
         car.y -= 10
 
@@ -132,7 +138,7 @@ def moveCar(car, canvas, window, num_turns, innerDist, outerDist):
         if car.x <= 100:
             car.turn()
             window.after(100, moveCar, car, canvas, window,
-                         num_turns + 1, innerDist, outerDist)
+                         num_turns + 1, innerDist, outerDist, switch)
             return
         car.x -= 10
 
@@ -141,18 +147,27 @@ def moveCar(car, canvas, window, num_turns, innerDist, outerDist):
         if car.y >= 900:
             car.turn()
             window.after(100, moveCar, car, canvas, window,
-                         num_turns + 1, innerDist, outerDist)
+                         num_turns + 1, innerDist, outerDist, switch)
             return
         car.y += 10
 
     car.draw(canvas)
 
+    # re-align if necessary
+    if outerDist > 80:
+        switch.running = 'f'    # too far
+    elif outerDist < 20:
+        switch.running = 'c'    # too close
+
     # get the data points again
-    dictVals = getData.start()
+    dictVals = getData.start(switch)
+    if dictVals == None:
+        sleep(3)
+        exit(0)
 
     # changed it to every 10 ms to make it faster
     window.after(10, moveCar, car, canvas, window,
-                 num_turns, dictVals.get('inner', 0), dictVals.get('outer', 0))
+                 num_turns, dictVals.get('inner', -1), dictVals.get('outer', -1), switch)
 
 
 def main():
@@ -163,11 +178,16 @@ def main():
 
     setup = Walls(canvas)
     car = Car(canvas)
+    switch = getData.Switch()
 
     # to update the graph every 100 ms
-    dictVals = getData.start()
+    dictVals = getData.start(switch)
+    if dictVals == None:
+        sleep(3)
+        exit(0)
+
     window.after(100, moveCar, car, canvas, window, 0,
-                 dictVals.get('inner', 0), dictVals.get('outer', 0))
+                 dictVals.get('inner', -1), dictVals.get('outer', -1), switch)
 
     window.mainloop()
 

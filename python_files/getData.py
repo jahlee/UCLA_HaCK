@@ -1,7 +1,7 @@
 # https://maker.pro/arduino/tutorial/how-to-create-simple-serial-communications-between-an-arduino-and-the-python-ide
 # on mac, use ls /dev/tty.* to find something like /dev/tty.usbmodem141101 (for COM port)
 import serial
-import time
+#import time
 import sys
 import signal
 import tkinter as tk
@@ -28,7 +28,7 @@ class Switch:
 
     def TurnOff(self):
         self.message.config(text='HOLUP! The car has stopped!', fg="red")
-        self.running = 's'  # stopped
+        self.running = 'w'  # stopped (waiting)
 
     def run(self):
         self.message.pack()
@@ -49,10 +49,9 @@ def signal_handler(signal, frame):
     sys.exit(0)
 
 
-def start():
+def start(switch):
     COM = input("Enter the COM Port\n")
     BAUD = input("Enter the Baudrate\n")
-    switch = Switch()
 
     SerialPort = serial.Serial(COM, BAUD, timeout=1)
     values = {}
@@ -73,17 +72,17 @@ def start():
             value = IncomingData.decode('utf-8').rstrip().split(": ")
             if (value[0] == "EXIT"):
                 return None
-            elif (value[0] == "WAIT"):
-                return {"WAIT": 0}
-            elif (value[0] == "STOP"):
-                return {"STOP": 0}
+            elif (value[0] == "WAIT"):  # wait 2 seconds and try again
+                sleep(2)
+                continue
             values[value[0]] = value[1]
-        time.sleep(0.01)
+        sleep(0.01)
     return values
 
 
 def main():
-    start()
+    switch = Switch()
+    start(switch)
 
 
 if __name__ == "__main__":

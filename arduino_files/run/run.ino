@@ -10,6 +10,7 @@ void setup()
 {
   setupSensors();
   setupWheels();
+  Serial.begin(9600);
 }
 
 void loop()
@@ -22,14 +23,17 @@ void loop()
     }
     else if (command == 'w') {
       Serial.println("WAIT: 0");
-      return;
+      delay(3000);
     }
-    else if (command == 's') {
-      delay(5000);
-      Serial.println("STOP: 0");
+    else if (command == 'c') {
+      Serial.println("CLOSE: -1");
+      adjustClose();
+    }
+    else if (command == 'f') {
+      Serial.println("FAR: -1");
+      adjustFar();
     }
   }
   runSensors();
-  runWheels()
-  // put your main code here, to run repeatedly:
+  runWheels();
 }
