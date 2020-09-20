@@ -38,7 +38,7 @@ double getDistance()
   // distance is in centimeters
   double distance2 = (double)duration * 345 / 2 / 10000;
 
-  // print in case we need the data for python drawing (?)
+  // print so that python has this data
   if (distance2 > 150)
   {
     Serial.print("front: ");

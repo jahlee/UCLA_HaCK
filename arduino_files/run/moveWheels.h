@@ -1,29 +1,28 @@
 #include "Arduino.h"
 
-#define E1 22  // Enable Pin for motor 1  // top left side
-#define E2 31  // Enable Pin for motor 2  // top right side
-#define E3 8   // Enable pin for motor 3 // bottom left side
-#define E4 45  // Enable pin for motor 4 // bottom right side
+// top left
+const int enA = 24; //Enable Pin for top Left
+const int in1 = 26; //Move forward
+const int in2 = 28; //Move backward
 
-//Top left 
-#define I1 24  // Control pin 1 for motor 1  // determine if forward or reverse
-#define I2 26  // Control pin 2 for motor 1  // determine if forward or reverse
+// top right
+const int enB = 13; //Enable pin for top right
+const int in3 = 11; //Move forward
+const int in4 = 12; //Move backward
 
-//Top Right
-#define I3 27  // Control pin 1 for motor 2 // f r s
-#define I4 29  // Control pin 2 for motor 2 // b r s
+//bottom left
+const int enC = 38; //Enable pin for bottom left
+const int in5 = 40; //Move forward
+const int in6 = 42; //Move backward
 
-//Bottom Left
-#define I5 9  // Control pin 1 for motor 3
-#define I6 10 // Control pin 2 for motor 3
+//bottom right
+const int enD = 48; //Enable pin for bottom right
+const int in7 = 44; //Move forward
+const int in8 = 46; //Move backward
 
-//Bottom Right
-#define I7 47   //Control pin 1 for motor 4
-#define I8 49   //Control pin 2 for motor 4
-
-// for the sensor in the front
-const int trigPin2 = 5;
-const int echoPin2 = 7;
+//Top Left Ultrasonic Sensor
+const int trigPin3 = 5;
+const int echoPin3 = 4;
 
 void setupWheels();
 double getDistance();

@@ -1,10 +1,12 @@
 #include "Arduino.h"
 
-const int trigPin1 = 3;
-const int echoPin1 = 4;
+//Left Side Ultrasonic Sensor
+const int trigPin1 = 2;
+const int echoPin1 = 3;
 
-const int trigPin3 = 6;
-const int echoPin3 = 8;
+//Right Side Ultrasonic Sensor
+const int trigPin2 = 6;
+const int echoPin2 = 7;
 
 void setupSensors();
 void runSensors();

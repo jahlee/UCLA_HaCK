@@ -1,5 +1,5 @@
 #include "getSensorData.h"
-
+// ~ = trig = write
 void setupSensors()
 {
   pinMode(trigPin1, OUTPUT);
@@ -8,8 +8,6 @@ void setupSensors()
 
 void runSensors()
 {
-  // ~ = trig = write
-
   // inside sensor (facing middle)
   digitalWrite(trigPin1, LOW);
   delayMicroseconds(2);
@@ -29,6 +27,7 @@ void runSensors()
     Serial.print("inside: ");
     Serial.println(distance1); // in cm
   }
+
 
   // outside sensor (facing wall)
   digitalWrite(trigPin3, LOW);
