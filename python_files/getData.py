@@ -68,7 +68,7 @@ def start():
     BAUD = input("Enter the Baudrate\n")
     SerialPort = serial.Serial(COM, BAUD, timeout=1)
 
-    while (1):
+    for i in range(100):
         # try:
         #     OutgoingData = input('> ')
         #     SerialPort.write(bytes(OutgoingData, 'utf-8'))
@@ -92,3 +92,10 @@ def start():
     for num in numbers:
         print(num)
     '''
+
+
+def main():
+    start()
+
+
+main()

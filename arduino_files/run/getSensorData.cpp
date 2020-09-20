@@ -1,31 +1,9 @@
-// currently gets the distance of 4 sensors if they are further than 150cm
-// if you don't need all 4, then comment out the ones you don't need (in setupSensor and in runSensor)
 #include "getSensorData.h"
-
-// // change as you please
-// const int trigPin1 = 3;
-// const int echoPin1 = 4;
-
-// const int trigPin2 = 5;
-// const int echoPin2 = 7;
-
-// const int trigPin3 = 6;
-// const int echoPin3 = 8;
-
-// const int trigPin4 = 9;
-// const int echoPin4 = 12;
-// long duration;
 
 void setupSensors()
 {
   pinMode(trigPin1, OUTPUT);
   pinMode(echoPin1, INPUT);
-  pinMode(trigPin2, OUTPUT);
-  pinMode(echoPin2, INPUT);
-  pinMode(trigPin3, OUTPUT);
-  pinMode(echoPin3, INPUT);
-  pinMode(trigPin4, OUTPUT);
-  pinMode(echoPin4, INPUT);
   Serial.begin(9600);
 }
 
@@ -33,7 +11,7 @@ void runSensors()
 {
   // ~ = trig = write
 
-  // first
+  // inside sensor
   digitalWrite(trigPin1, LOW);
   delayMicroseconds(2);
 
@@ -41,75 +19,16 @@ void runSensors()
   delayMicroseconds(10);
   digitalWrite(trigPin1, LOW);
 
-  duration = pulseIn(echoPin1, HIGH);
+  long duration = pulseIn(echoPin1, HIGH);
 
   // distance is in centimeters
   double distance1 = (double)duration * 345 / 2 / 10000;
 
-  if (distance1 > 150)
+  // distance is <= 1.5 meters
+  if (distance1 <= 150)
   {
-    Serial.print("first: ");
-    Serial.println(distance1); // in xm
-  }
-
-  // second
-  delayMicroseconds(2);
-  digitalWrite(trigPin2, LOW);
-  delayMicroseconds(2);
-
-  digitalWrite(trigPin2, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin2, LOW);
-
-  duration = pulseIn(echoPin2, HIGH);
-
-  // distance is in centimeters
-  double distance2 = (double)duration * 345 / 2 / 10000;
-
-  if (distance2 > 150)
-  {
-    Serial.print("second: ");
-    Serial.println(distance2); // in xm
-  }
-
-  // third
-  delayMicroseconds(2);
-  digitalWrite(trigPin3, LOW);
-  delayMicroseconds(2);
-
-  digitalWrite(trigPin3, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin3, LOW);
-
-  duration = pulseIn(echoPin3, HIGH);
-
-  // distance is in centimeters
-  double distance3 = (double)duration * 345 / 2 / 10000;
-
-  if (distance3 > 150)
-  {
-    Serial.print("third: ");
-    Serial.println(distance3); // in xm
-  }
-
-  // fourth
-  delayMicroseconds(2);
-  digitalWrite(trigPin4, LOW);
-  delayMicroseconds(2);
-
-  digitalWrite(trigPin4, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin4, LOW);
-
-  duration = pulseIn(echoPin4, HIGH);
-
-  // distance is in centimeters
-  double distance4 = (double)duration * 345 / 2 / 10000;
-
-  if (distance4 > 150)
-  {
-    Serial.print("fourth: ");
-    Serial.println(distance4); // in xm
+    Serial.print("inside: ");
+    Serial.println(distance1); // in cm
   }
 }
 

@@ -8,22 +8,14 @@
 #define I3 12 // Control pin 1 for motor 2 // f r s
 #define I4 13 // Control pin 2 for motor 2 // b r s
 
-//sensor pins
-#define trig_pin A3 //analog input 1
-#define echo_pin A2 //analog input 2
-
-#define maximum_distance 200
+const int trigPin2 = 5;
+const int echoPin2 = 7;
 
 void setupWheels();
+double getDistance();
 void runWheels();
 
-// delete the following if we are not using servo to check direction
-int lookRight();
-int lookLeft();
-int lookRight();
-int readPing();
-//
-void moveStop();
+void stop();
 void moveForward();
 void moveBackward();
 void turnRight();
