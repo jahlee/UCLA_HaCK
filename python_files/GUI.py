@@ -106,7 +106,7 @@ class Car:
 def moveCar(car, canvas, window, num_turns, innerDist, outerDist, frontDist, switch):
     # stop finishing 2 rotations
     if num_turns >= 8:
-        switch.running = 'e'
+        switch.command = 'e'
         tempVals = getData.start(switch)
         if tempVals == None:
             sleep(3)
@@ -135,6 +135,7 @@ def moveCar(car, canvas, window, num_turns, innerDist, outerDist, frontDist, swi
 
     # going up
     elif num_turns % 4 == 1:
+        # switch.command = 'w'
         if car.y <= 100:
             car.turn()
             window.after(1000, moveCar, car, canvas, window,
@@ -148,6 +149,7 @@ def moveCar(car, canvas, window, num_turns, innerDist, outerDist, frontDist, swi
 
     # going left
     elif num_turns % 4 == 2:
+        # switch.command = 'e'
         if car.x <= 100:
             car.turn()
             window.after(1000, moveCar, car, canvas, window,
@@ -176,9 +178,9 @@ def moveCar(car, canvas, window, num_turns, innerDist, outerDist, frontDist, swi
 
     # re-align if necessary
     if outerDist*0.6 > 80:
-        switch.running = 'f'    # too far
+        switch.command = 'f'    # too far
     elif outerDist*0.6 < 20:
-        switch.running = 'c'    # too close
+        switch.command = 'c'    # too close
 
     # get the data points again
     dictVals = getData.start(switch)

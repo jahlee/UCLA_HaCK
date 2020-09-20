@@ -11,8 +11,10 @@ from time import sleep
 # GUI to turn on/off/exit the project
 class Switch:
     def __init__(self, window):
-        self.COM = input("Enter the COM Port\n")
-        self.BAUD = input("Enter the Baudrate\n")
+        # self.COM = input("Enter the COM Port\n")
+        # self.BAUD = input("Enter the Baudrate\n")
+        self.COM = "/dev/tty.usbmodem141101"
+        self.BAUD = "9600"
         self.SerialPort = serial.Serial(self.COM, self.BAUD, timeout=1)
         self.window = window
         self.message = tk.Label(
@@ -24,15 +26,15 @@ class Switch:
             self.window, text="EXIT", command=self.Exit)
         self.pack()
         # self.run()
-        self.running = ''  # waiting
+        self.command = ''  # waiting
 
     def TurnOn(self):
-        self.message.config(text='VROOM! The car is running!', fg="green")
-        self.running = ''  # running, no Serial.available
+        self.message.config(text='VROOM! The car is command!', fg="green")
+        self.command = ''  # running, no Serial.available
 
     def TurnOff(self):
         self.message.config(text='HOLUP! The car has stopped!', fg="red")
-        self.running = 'w'  # stopped (waiting)
+        self.command = 'w'  # stopped (waiting)
 
     def pack(self):
         self.message.pack()
@@ -46,7 +48,7 @@ class Switch:
         # self.window.mainloop()
 
     def Exit(self):
-        self.running = 'e'  # exited
+        self.command = 'e'  # exited
         exit(0)
 
     def loop(self):
@@ -68,7 +70,7 @@ def start(switch):
     values = {}
     while len(values) < 3:
         try:
-            OutgoingData = switch.running
+            OutgoingData = switch.command
             switch.SerialPort.write(bytes(OutgoingData, 'utf-8'))
         except KeyboardInterrupt:
             print("Closing and exiting the program")
@@ -81,10 +83,11 @@ def start(switch):
             # gets value without extra whitespace
             value = IncomingData.decode('utf-8').strip().split(":")
 
-            if (value[0] == "EXIT"):
+            if (value[0] == "EXIT" or value[0] == "-1"):
+                print("EXIT")
                 return None
-            elif (value[0] == "WAIT"):  # wait 2 seconds and try again
-                sleep(2)
+            elif (value[0] == "WAIT" or value[0] == "-2"):  # wait 2 seconds and try again
+                print("WAIT")
                 continue
             elif value[0] == 'front' or value[0] == 'inner' or value[0] == 'outer':
                 values[value[0]] = float(value[1])
@@ -100,9 +103,9 @@ def main():
     for i in range(200):
         print(i)
         # if (i % 20 == 0):
-        #     switch.running = 'w'
+        #     switch.command = 'w'
         # if i % 45 == 0:
-        #     switch.running = 'e'
+        #     switch.command = 'e'
         print(start(switch))
 
 
