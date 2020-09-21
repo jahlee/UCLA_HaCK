@@ -3,10 +3,10 @@ import getData
 from time import sleep
 # import matplotlib.pyplot as plt
 # car ~ 25 x 24cm, arena ~ 150 x 150cm
-# --> 150 x 150px car, 900 x 900px arena
-# 6 px = 1cm
-# given a distance X in cm, --> 6 * X = num of pixels
-# optimally ~25cm away = ~150px away from walls
+# --> 100 x 100px car, 600 x 600px arena
+# 4 px = 1cm
+# given a distance X in cm, --> 4 * X = num of pixels
+# optimally ~25cm away = ~100px away from walls
 
 car_arr = []
 wall_arr = []
@@ -17,16 +17,16 @@ class Walls:
         self.draw(canvas)
 
     def draw(self, canvas):
-        canvas.create_rectangle(50, 50, 950, 950, outline='white')
+        canvas.create_rectangle(50, 50, 650, 650, outline='white')
 
 
 class Car:
     def __init__(self, canvas):
-        self.x = 200
-        self.y = 800
-        self.endX = 950
-        self.endY = 800
-        self.width = 65  # 65 pixels is how far from center they are, make it a little smaller
+        self.x = 150
+        self.y = 550
+        self.endX = 650
+        self.endY = 550
+        self.width = 40  # 40 pixels is how far from center they are, make it a little smaller
         self.draw(canvas)
         self.direction = 0  # self.direction % 4 = current direction of car
         # 0 = right, 1 = up, 2 = left, 3 = down
@@ -50,11 +50,11 @@ class Car:
 
     def drawInside(self, canvas, distance):
         # recorded a distance greater than the arena length or faulty distance
-        if distance > 1500 or distance < 0:
+        if distance > 150 or distance < 0:
             return
 
         # tot_dist = poisition of sensors + distance away from object
-        tot_dist = self.width + (int)(6 * distance)
+        tot_dist = self.width + (int)(4 * distance)
 
         # above
         if self.direction % 4 == 0:
@@ -77,12 +77,12 @@ class Car:
     def updatePos(self, distance):
         if (distance < 0):
             pass
-        tot_distance = self.width + (int)(distance*6)
+        tot_distance = self.width + (int)(distance*4)
         if self.direction % 4 == 0:
-            self.y = 950 - tot_distance
+            self.y = 650 - tot_distance
             self.endY = self.y
         elif self.direction % 4 == 1:
-            self.x = 950 - tot_distance
+            self.x = 650 - tot_distance
             self.endX = self.x
         elif self.direction % 4 == 2:
             self.y = 50 + tot_distance
@@ -95,7 +95,7 @@ class Car:
     def turn(self):
         self.direction += 1
         if self.direction % 4 == 0:
-            self.endX = 950
+            self.endX = 650
             # self.endX = self.x
         elif self.direction % 4 == 1:
             self.endY = 50
@@ -104,7 +104,7 @@ class Car:
             self.endX = 50
             # self.endY = self.y
         else:
-            self.endY = 950
+            self.endY = 650
             # self.endX = self.x
 
 
@@ -132,11 +132,11 @@ def moveCar(car, canvas, window, num_turns, innerDist, outerDist, frontDist, swi
             window.after(2500, moveCar, car, canvas, window,
                          num_turns + 1, innerDist, outerDist, frontDist, switch)
             return
-        # if distance in front is readable and the change in position is not larger than 150 pixels
-        if frontDist > 0 and abs(950 - (frontDist * 6) - car.x) < 150:
-            car.x = 950 - (int)(frontDist * 6)
+        # if distance in front is readable and the change in position is not larger than 100 pixels
+        if frontDist > 0 and abs(650 - (frontDist * 4) - car.x) < 100:
+            car.x = 950 - (int)(frontDist * 4)
         else:
-            car.x += 10
+            car.x += 5
 
     # going up
     elif num_turns % 4 == 1:
@@ -146,11 +146,11 @@ def moveCar(car, canvas, window, num_turns, innerDist, outerDist, frontDist, swi
             window.after(2500, moveCar, car, canvas, window,
                          num_turns + 1, innerDist, outerDist, frontDist, switch)
             return
-        # if distance in front is readable and the change in position is not larger than 150 pixels
-        if frontDist > 0 and abs((frontDist * 6) - 50 - car.y) < 150:
-            car.y = (int)(frontDist * 6) - 50
+        # if distance in front is readable and the change in position is not larger than 100 pixels
+        if frontDist > 0 and abs((frontDist * 4) - 50 - car.y) < 100:
+            car.y = (int)(frontDist * 4) - 50
         else:
-            car.y -= 10
+            car.y -= 5
 
     # going left
     elif num_turns % 4 == 2:
@@ -160,11 +160,11 @@ def moveCar(car, canvas, window, num_turns, innerDist, outerDist, frontDist, swi
             window.after(2500, moveCar, car, canvas, window,
                          num_turns + 1, innerDist, outerDist, frontDist, switch)
             return
-        # if distance in front is readable and the change in position is not larger than 150 pixels
-        if frontDist > 0 and abs((frontDist * 6) - 50 - car.x) < 150:
+        # if distance in front is readable and the change in position is not larger than 100 pixels
+        if frontDist > 0 and abs((frontDist * 6) - 50 - car.x) < 100:
             car.x = (int)(frontDist * 6) - 50
         else:
-            car.x -= 10
+            car.x -= 5
 
     # going down
     else:
@@ -173,18 +173,18 @@ def moveCar(car, canvas, window, num_turns, innerDist, outerDist, frontDist, swi
             window.after(2500, moveCar, car, canvas, window,
                          num_turns + 1, innerDist, outerDist, frontDist, switch)
             return
-        # if distance in front is readable and the change in position is not larger than 150 pixels
-        if frontDist > 0 and abs(950 - (frontDist * 6) - car.y) < 150:
-            car.y = 950 - (int)(frontDist * 6)
+        # if distance in front is readable and the change in position is not larger than 100 pixels
+        if frontDist > 0 and abs(650 - (frontDist * 4) - car.y) < 100:
+            car.y = 650 - (int)(frontDist * 4)
         else:
-            car.y += 10
+            car.y += 5
 
     car.draw(canvas)
 
     # re-align if necessary
-    if outerDist*6 > 200:
+    if outerDist*4 > 140:
         switch.command = 'f'    # too far
-    elif outerDist*6 < 100:
+    elif outerDist*4 < 60:
         switch.command = 'c'    # too close
 
     # get the data points again
@@ -201,7 +201,7 @@ def moveCar(car, canvas, window, num_turns, innerDist, outerDist, frontDist, swi
 def main():
     window = tk.Tk()
     window.title('Real-Time Graph')
-    canvas = tk.Canvas(window, height=1000, width=1000, bg='black')
+    canvas = tk.Canvas(window, height=700, width=700, bg='black')
     canvas.pack()
 
     setup = Walls(canvas)

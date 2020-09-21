@@ -27,12 +27,11 @@ class Switch:
         self.exitButton = tk.Button(
             self.new_window, text="EXIT", command=self.Exit)
         self.packComponents()
-        # self.run()
-        self.command = ''  # waiting
+        self.command = 'w'  # waiting
 
     def TurnOn(self):
         self.message.config(text='VROOM! The car is command!', fg="green")
-        self.command = ''  # running, no Serial.available
+        self.command = 'r'  # running, no Serial.available
 
     def TurnOff(self):
         self.message.config(text='HOLUP! The car has stopped!', fg="red")
