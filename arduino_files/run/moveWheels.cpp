@@ -15,35 +15,48 @@ void setupWheels()
   pinMode(I6, OUTPUT);
   pinMode(I7, OUTPUT);
   pinMode(I8, OUTPUT);
-  
-  // sets up the front sensor
+
+  analogWrite(E1, 255); // Run in full speed
+  analogWrite(E2, 255); // Run in full speed
+  analogWrite(E3, 255); // Run in full speed
+  analogWrite(E4, 255); // Run in full speed
+
+  // sets up the front left sensor
   pinMode(trigPin3, OUTPUT);
   pinMode(echoPin3, INPUT);
+
+  // sets up the front right sensor
+  //  pinMode(trigPin4, OUTPUT);
+  //  pinMode(echoPin4, INPUT);
 }
 
 void runWheels()
 {
   double dist = getDistance();
   delay(50);
-  moveForward(500);
-  
+
   // too close for a full turn
   if (dist <= 15)
   {
-    moveBackward(300);
     stopCar();
+    moveBackward(1500);
+    turnLeft(750);
   }
   // need to turn
-  else if (dist <= 30)
+  else if (dist <= 35)
   {
     stopCar();
-    turnLeft(500);
+    turnLeft(2700);
+  }
+  else
+  {
+    moveForward(300);
   }
 }
 
-
 double getDistance()
 {
+  // distance from left front sensor
   delayMicroseconds(2);
   digitalWrite(trigPin3, LOW);
   delayMicroseconds(2);
@@ -57,12 +70,42 @@ double getDistance()
   // distance is in centimeters
   double distance3 = (double)duration * 345 / 2 / 10000;
 
-  // print so that python has this data
-  if (distance3 > 150)
-  {
-    Serial.print("front: ");
-    Serial.println(distance3); // in cm
-  }
+  // distance from front right sensor
+  //  delayMicroseconds(2);
+  //  digitalWrite(trigPin4, LOW);
+  //  delayMicroseconds(2);
+  //
+  //  digitalWrite(trigPin4, HIGH);
+  //  delayMicroseconds(10);
+  //  digitalWrite(trigPin4, LOW);
+  //
+  //  duration = pulseIn(echoPin4, HIGH);
+  //
+  //  // distance is in centimeters
+  //  double distance4 = (double)duration * 345 / 2 / 10000;
+  //
+  //  double avgDistance = (distance3 + distance4) / 2;
+  //  double minDistance = min(distance3, distance4);
+  //  double maxDistance = max(distance3, distance4);
+  //
+  //  // print so that python has this data
+  //  if (avgDistance < 150)
+  //  {
+  //    Serial.print("afront: ");
+  //    Serial.println(avgDistance); // in cm
+  //  }
+  //
+  //  Serial.print("LeftFront: ");
+  //  Serial.println(distance3);
+  //  Serial.print("RightFront: ");
+  //  Serial.println(distance4);
+  //
+  //  if (abs(distance3 - distance4) > 20) {
+  //    return maxDistance;
+  //  }
+  //  return avgDistance;
+  Serial.print("front: ");
+  Serial.println(distance3);
   return distance3;
 }
 
@@ -76,7 +119,7 @@ void stopCar()
   digitalWrite(I6, LOW);
   digitalWrite(I7, LOW);
   digitalWrite(I8, LOW);
-  delay(500);
+  delay(250);
 }
 
 void moveForward(int ms)
@@ -126,9 +169,6 @@ void turnRight(int ms)
   digitalWrite(I7, LOW);
 
   delay(ms); // how long we turn for
-
-  // go forwards
-  moveForward(ms / 2);
 }
 
 void turnLeft(int ms)
@@ -152,29 +192,28 @@ void turnLeft(int ms)
   digitalWrite(I8, LOW);
 
   delay(ms); // how long we turn for
-
-  // go forwards
-  moveForward(ms / 2);
 }
 
-void adjustFar() {
+void adjustFar(double dist)
+{
   // turn right
-  turnRight(250);
+  turnRight((int)dist * 10);
 
   // turn left
-  turnLeft(150);
+  turnLeft((int)dist * 5);
 
   // go forwards
   moveForward(100);
 }
 
-void adjustClose() {
+void adjustClose(double dist)
+{
   // turn left
-  turnLeft(250);
+  turnLeft((int)dist * 10);
 
   // turn right
-  turnRight(150);
-  
+  turnRight((int)dist * 5);
+
   // go forwards
   moveForward(100);
 }

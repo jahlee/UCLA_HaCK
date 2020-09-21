@@ -8,8 +8,13 @@ void setupSensors()
   pinMode(echoPin2, INPUT);
 }
 
-void runSensors()
+double runSensors()
 {
+  insideSensor();
+  return outsideSensor();
+}
+
+double insideSensor() {
   // inside sensor (facing middle)
   digitalWrite(trigPin1, LOW);
   delayMicroseconds(2);
@@ -29,7 +34,10 @@ void runSensors()
     Serial.print("inside: ");
     Serial.println(distance1); // in cm
   }
+  //return distance1;
+}
 
+double outsideSensor() {
   // outside sensor (facing wall)
   digitalWrite(trigPin2, LOW);
   delayMicroseconds(2);
@@ -38,7 +46,7 @@ void runSensors()
   delayMicroseconds(10);
   digitalWrite(trigPin2, LOW);
 
-  duration = pulseIn(echoPin2, HIGH);
+  long duration = pulseIn(echoPin2, HIGH);
 
   // distance is in centimeters
   double distance2 = (double)duration * 345 / 2 / 10000;
@@ -49,4 +57,5 @@ void runSensors()
     Serial.print("outside: ");
     Serial.println(distance2); // in cm
   }
+  return distance2;
 }

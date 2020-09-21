@@ -1,7 +1,7 @@
 # https://maker.pro/arduino/tutorial/how-to-create-simple-serial-communications-between-an-arduino-and-the-python-ide
 # on mac, use ls /dev/tty.* to find something like /dev/tty.usbmodem141101 (for COM port)
 import serial
-# import time
+import random
 import sys
 import signal
 import tkinter as tk
@@ -11,20 +11,22 @@ from time import sleep
 # GUI to turn on/off/exit the project
 class Switch:
     def __init__(self, window):
-        # self.COM = input("Enter the COM Port\n")
-        # self.BAUD = input("Enter the Baudrate\n")
-        self.COM = "/dev/tty.usbmodem141101"
-        self.BAUD = "9600"
+        self.COM = input("Enter the COM Port\n")
+        self.BAUD = input("Enter the Baudrate\n")
+        # self.COM = "/dev/tty.usbmodem141101"
+        # self.BAUD = "9600"
         self.SerialPort = serial.Serial(self.COM, self.BAUD, timeout=1)
-        self.window = window
+
+        self.new_window = tk.Toplevel(window)
         self.message = tk.Label(
-            self.window, text="Ready whenever you are!", fg="blue")
-        self.onButton = tk.Button(self.window, text="ON", command=self.TurnOn)
+            self.new_window, text="Ready whenever you are!", fg="blue")
+        self.onButton = tk.Button(
+            self.new_window, text="ON", command=self.TurnOn)
         self.offButton = tk.Button(
-            self.window, text="OFF", command=self.TurnOff)
+            self.new_window, text="OFF", command=self.TurnOff)
         self.exitButton = tk.Button(
-            self.window, text="EXIT", command=self.Exit)
-        self.pack()
+            self.new_window, text="EXIT", command=self.Exit)
+        self.packComponents()
         # self.run()
         self.command = ''  # waiting
 
@@ -36,16 +38,11 @@ class Switch:
         self.message.config(text='HOLUP! The car has stopped!', fg="red")
         self.command = 'w'  # stopped (waiting)
 
-    def pack(self):
+    def packComponents(self):
         self.message.pack()
         self.onButton.pack()
         self.offButton.pack()
         self.exitButton.pack()
-
-    def run(self):
-        self.window.after(1000, self.pack)
-        # return
-        # self.window.mainloop()
 
     def Exit(self):
         self.command = 'e'  # exited
@@ -70,6 +67,7 @@ def start(switch):
     values = {}
     while len(values) < 3:
         try:
+            #switch.command = choices[random.randrange(3)]
             OutgoingData = switch.command
             switch.SerialPort.write(bytes(OutgoingData, 'utf-8'))
         except KeyboardInterrupt:
@@ -81,33 +79,42 @@ def start(switch):
         if (IncomingData):
             # print((IncomingData).decode('utf-8'))   # print data
             # gets value without extra whitespace
-            value = IncomingData.decode('utf-8').strip().split(":")
-
-            if (value[0] == "EXIT" or value[0] == "-1"):
-                print("EXIT")
-                return None
-            elif (value[0] == "WAIT" or value[0] == "-2"):  # wait 2 seconds and try again
-                print("WAIT")
-                continue
-            elif value[0] == 'front' or value[0] == 'inner' or value[0] == 'outer':
-                values[value[0]] = float(value[1])
+            try:
+                value = IncomingData.decode('utf-8').strip().split(":")
+                if (value[0] == "EXIT" or value[0] == "-1"):
+                    print("EXIT")
+                    return None
+                elif (value[0] == "WAIT" or value[0] == "-2"):  # wait 2 seconds and try again
+                    print("WAIT")
+                    sleep(0.3)
+                    continue
+                elif value[0] == 'front' or value[0] == 'inner' or value[0] == 'outer':
+                    try:
+                        num = float(value[1])
+                        values[value[0]] = num
+                    except ValueError:
+                        print("Bad input... retrying")
+                else:
+                    print(value)
+            except UnicodeDecodeError:
+                print("Bad unicode")
         sleep(0.01)
     return values
 
 
-def main():
-    window = tk.Tk()
-    switch = Switch(window)
-    print("hello")
-    window.mainloop()
-    for i in range(200):
-        print(i)
-        # if (i % 20 == 0):
-        #     switch.command = 'w'
-        # if i % 45 == 0:
-        #     switch.command = 'e'
-        print(start(switch))
+# def main():
+    # window = tk.Tk()
+    # switch = Switch(window)
+    # print("hello")
+    # window.after
+    # window.mainloop()
+    # for i in range(200):
+    #     print(i)
+    # if (i % 20 == 0):
+    #     switch.command = 'w'
+    # if i % 45 == 0:
+    #     switch.command = 'e'
+    # print(start(switch))
 
-
-if __name__ == "__main__":
-    main()
+    # if __name__ == "__main__":
+    #     main()

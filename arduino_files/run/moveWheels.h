@@ -24,6 +24,10 @@ const int I8 = 46; //Move backward
 const int trigPin3 = 5;
 const int echoPin3 = 4;
 
+//Top Right Ultrasonic Sensor
+//const int trigPin4 = 8;
+//const int echoPin4 = 9;
+
 void setupWheels();
 double getDistance();
 void runWheels();
@@ -33,5 +37,5 @@ void moveForward(int ms);
 void moveBackward(int ms);
 void turnRight(int ms);
 void turnLeft(int ms);
-void adjustFar();
-void adjustClose();
+void adjustFar(double dist);
+void adjustClose(double dist);
